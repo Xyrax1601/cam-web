@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Capture App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Image Capture</h1>
+        <div class="video-container">
+            <video id="video" autoplay></video>
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="controls">
+            <button id="capture">Capture</button>
+        </div>
+        <div id="popup" class="popup hidden">
+            <button id="closePopup" class="close-popup">&times;</button>
+            <img id="capturedImage" alt="Captured Image">
+            <div class="frame-quality-controls">
+                <label for="frameSize">Frame Size:</label>
+            <select id="frameSize">
+            <option value="original">Original</option>
+            <option value="640x480">640x480</option>
+            <option value="800x600">800x600</option>
+            <option value="1024x768">1024x768</option>
+        </select>
+
+                <label for="imageQuality">Resolution:</label>
+                <select id="imageQuality">
+                    <option value="1920">1920p (Full HD)</option>
+                    <option value="1280">1280p (HD)</option>
+                    <option value="640">640p (SD)</option>
+                </select>
+            </div>
+            <div class="popup-controls">
+                <button id="retry">Retry</button>
+                <button id="download">Download</button>
+                
+            </div>
+
+            <!-- Popup for color selection -->
+<div id="colorSelectionPopup" class="popup hidden">
+    <h2 style="color: aliceblue;">Select Background Color</h2>
+    <select id="colorSelect">
+      <option value="transparent">Transparent</option>
+      <option value="#FFFFFF">White</option>
+      <option value="#000000">Black</option>
+      <option value="#FF0000">Red</option>
+      <option value="#00FF00">Green</option>
+      <option value="#0000FF">Blue</option>
+      <!-- Add more colors as needed -->
+    </select><br>
+    <button id="applyColorButton">Apply Color</button><br>
+    <button id="cancelColorButton">Cancel</button>
+    
+  </div>
+  
+  <!-- Canvas for Cropping -->
+  <canvas id="cropCanvas" style="display: none;"></canvas> <!-- Invisible crop canvas -->
+  
+<button id="removeBgButton">Remove Background</button>
+
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
