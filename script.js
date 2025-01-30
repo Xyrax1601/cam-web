@@ -66,8 +66,6 @@ switchCameraButton.addEventListener('click', () => {
 
 // Start the default camera when the page loads
 startCamera();
-// Start the default camera when the page loads
-startCamera();
 // Capture image
 captureButton.addEventListener('click', () => {
   canvas.width = video.videoWidth;
