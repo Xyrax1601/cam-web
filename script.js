@@ -1,6 +1,9 @@
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const captureButton = document.getElementById('capture');
+const switchCameraButton = document.getElementById('switchCamera');
+let useFrontCamera = true; // Default to front camera
+let stream = null; // Store the active stream
 const popup = document.getElementById('popup');
 const capturedImage = document.getElementById('capturedImage');
 const retryButton = document.getElementById('retry');
@@ -26,6 +29,36 @@ navigator.mediaDevices.getUserMedia({ video: true })
     console.error('Camera access error:', error);
     alert('Unable to access the camera. Please allow camera permissions.');
   });
+
+// Function to start the camera with the selected facing mode
+async function startCamera() {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop()); // Stop existing stream
+  }
+
+  const constraints = {
+    video: {
+      facingMode: useFrontCamera ? "user" : "environment"
+    }
+  };
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+    video.srcObject = stream;
+  } catch (error) {
+    console.error("Camera access error:", error);
+    alert("Unable to access the camera. Please allow camera permissions.");
+  }
+}
+
+// Toggle between front and back camera
+switchCameraButton.addEventListener('click', () => {
+  useFrontCamera = !useFrontCamera; // Toggle camera mode
+  startCamera(); // Restart camera with the new mode
+});
+
+// Start the default camera when the page loads
+startCamera();
 
 // Capture image
 captureButton.addEventListener('click', () => {
