@@ -30,62 +30,39 @@ navigator.mediaDevices.getUserMedia({ video: true })
     alert('Unable to access the camera. Please allow camera permissions.');
   });
 
+
 // Function to start the camera with the selected facing mode
 async function startCamera() {
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop()); // Stop existing stream
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop()); // Stop existing stream
+  }
+
+  const constraints = {
+    video: {
+      facingMode: useFrontCamera ? "user" : "environment"
     }
+  };
 
-    const constraints = {
-        video: {
-            facingMode: useFrontCamera ? "user" : "environment"
-        }
-    };
+  try {
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+    video.srcObject = stream;
 
-    try {
-        stream = await navigator.mediaDevices.getUserMedia(constraints);
-        video.srcObject = stream;
-
-        // Apply CSS transformation based on the camera
-        if (useFrontCamera) {
-            video.style.transform = "scaleX(-1)"; // Mirror the front camera
-        } else {
-            video.style.transform = "scaleX(1)"; // Normal for the back camera
-        }
-    } catch (error) {
-        console.error("Camera access error:", error);
-        alert("Unable to access the camera. Please allow camera permissions.");
+    // Apply CSS transformation based on the camera
+    if (useFrontCamera) {
+      video.style.transform = "scaleX(-1)"; // Mirror the front camera
+    } else {
+      video.style.transform = "scaleX(1)"; // Normal for the back camera
     }
+  } catch (error) {
+    console.error("Camera access error:", error);
+    alert("Unable to access the camera. Please allow camera permissions.");
+  }
 }
 
 // Toggle between front and back camera
 switchCameraButton.addEventListener('click', () => {
-    useFrontCamera = !useFrontCamera; // Toggle camera mode
-    startCamera(); // Restart camera with the new mode
-});
-
-// Capture image with correct flipping
-captureButton.addEventListener('click', () => {
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const context = canvas.getContext('2d');
-
-    if (useFrontCamera) {
-        // Flip the image horizontally if using the front camera
-        context.translate(canvas.width, 0);
-        context.scale(-1, 1);
-    }
-
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // Reset transform to avoid affecting other drawings
-    context.setTransform(1, 0, 0, 1, 0, 0);
-
-    const imageDataURL = canvas.toDataURL("image/png");
-
-    // Show captured image in popup
-    capturedImage.src = imageDataURL;
-    popup.classList.remove('hidden');
+  useFrontCamera = !useFrontCamera; // Toggle camera mode
+  startCamera(); // Restart camera with the new mode
 });
 
 // Start the default camera when the page loads
