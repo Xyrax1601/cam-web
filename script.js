@@ -30,40 +30,43 @@ navigator.mediaDevices.getUserMedia({ video: true })
     alert('Unable to access the camera. Please allow camera permissions.');
   });
 
-// Function to start the camera with the selected facing mode
-async function startCamera() {
-  if (stream) {
-    stream.getTracks().forEach(track => track.stop()); // Stop existing stream
-  }
+async function startCamera(facingMode = "user") {
+    try {
+        // Stop any existing camera stream
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+        }
 
-  const constraints = {
-    video: {
-      facingMode: useFrontCamera ? "user" : "environment"
+        // Request new camera stream
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: facingMode }
+        });
+
+        currentStream = stream; // Store the active stream
+        video.srcObject = stream;
+
+        // Flip the video if using the front camera
+        if (facingMode === "user") {
+            video.style.transform = "scaleX(-1)"; // Mirror front camera
+        } else {
+            video.style.transform = "scaleX(1)"; // Normal for back camera
+        }
+
+        console.log("Camera switched successfully! ✅");
+    } catch (error) {
+        console.error("Camera error:", error);
+        alert(`Camera error: ${error.name} - ${error.message}`);
     }
-  };
-
-  try {
-    stream = await navigator.mediaDevices.getUserMedia(constraints);
-    video.srcObject = stream;
-
-    // Apply CSS transformation based on the camera
-    if (useFrontCamera) {
-      video.style.transform = "scaleX(-1)"; // Mirror the front camera
-    } else {
-      video.style.transform = "scaleX(1)"; // Normal for the back camera
-    }
-  } catch (error) {
-    console.error("Camera access error:", error);
-    alert("Unable to access the camera. Please allow camera permissions.");
-  }
 }
 
-// Toggle between front and back camera
-switchCameraButton.addEventListener('click', () => {
-  useFrontCamera = !useFrontCamera; // Toggle camera mode
-  startCamera(); // Restart camera with the new mode
-});
+// Initialize with the front camera
+startCamera("user");
 
+switchCameraButton.addEventListener("click", () => {
+    usingFrontCamera = !usingFrontCamera; // Toggle camera mode
+    const newFacingMode = usingFrontCamera ? "user" : "environment";
+    startCamera(newFacingMode);
+});
 // Start the default camera when the page loads
 startCamera();
 // Capture image
