@@ -45,6 +45,13 @@ async function startCamera() {
   try {
     stream = await navigator.mediaDevices.getUserMedia(constraints);
     video.srcObject = stream;
+
+    // Apply CSS transformation based on the camera
+    if (useFrontCamera) {
+      video.style.transform = "scaleX(-1)"; // Mirror the front camera
+    } else {
+      video.style.transform = "scaleX(1)"; // Normal for the back camera
+    }
   } catch (error) {
     console.error("Camera access error:", error);
     alert("Unable to access the camera. Please allow camera permissions.");
@@ -59,7 +66,6 @@ switchCameraButton.addEventListener('click', () => {
 
 // Start the default camera when the page loads
 startCamera();
-
 // Capture image
 captureButton.addEventListener('click', () => {
   canvas.width = video.videoWidth;
